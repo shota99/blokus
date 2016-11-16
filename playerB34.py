@@ -26,18 +26,24 @@ class CPlayerB34(Player):
             self._initial(board)
         else:
             self._update(board)
-        if self.node.legal_actions:
-            # action = random.choice(tuple(self.node.legal_actions))
+
+        if self.count == 0:
+            action = (18, 5, (18, 1))
+        elif self.count == 1:
+            action = (17, 2, (15, 4))
+        elif self.count == 2:
+            action = (19, 2, (12, 7))
+        elif self.node.legal_actions:
             score = dict()
             for action in self.node.legal_actions:
                 size_piece, num_corner, num_action, piece_blocking, edge_blocking = \
                     self.all_legal_actions.get_heuristic_info(action)
-                score[action] = 50 * size_piece + 1.3 * num_action + sum(piece_blocking[1:4]) - 0.5 * edge_blocking
-            action = max(self.node.legal_actions, key=lambda action: score[action])
-            self.all_legal_actions.update(action)
-            hand = _change_action_coding(action)
+                score[action] = 30 * size_piece + 1 * num_action + sum(piece_blocking[1:4]) - 0.5 * edge_blocking
+            action = max(self.node.legal_actions, key=lambda x: score[x])
         else:
-            hand = 'pass'
+            return 'pass'
+        self.all_legal_actions.update(action)
+        hand = _change_action_coding(action)
         self.count += 1
         return hand
 
