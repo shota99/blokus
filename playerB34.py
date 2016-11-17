@@ -38,13 +38,28 @@ class CPlayerB34(Player):
             for action in self.node.legal_actions:
                 size_piece, num_corner, num_action, piece_blocking, edge_blocking = \
                     self.all_legal_actions.get_heuristic_info(action)
-                score[action] = 30 * size_piece + 1 * num_action + sum(piece_blocking[1:4]) - 0.5 * edge_blocking
+
+                if self.count <= 6:
+                    score[action] = 30 * size_piece + 1.5 * num_action + \
+                                    1 * 3*np.average(piece_blocking[1:4], weights=[2, 1, 2]) - 0.5 * edge_blocking
+                elif self.count <= 13:
+                    score[action] = 30 * size_piece + 1.3 * num_action + \
+                                    1.2 * sum(piece_blocking[1:4]) - 0.5 * edge_blocking
+                else:
+                    score[action] = 30 * size_piece + 1 * num_action + \
+                                    1 * sum(piece_blocking[1:4]) - 0.5 * edge_blocking
             action = max(self.node.legal_actions, key=lambda x: score[x])
+            size_piece, num_corner, num_action, piece_blocking, edge_blocking = \
+                self.all_legal_actions.get_heuristic_info(action)
+            print("size:{}, #action:{}, piece blocking:{}, edge blocking:{}".format(size_piece, num_action,
+                                                                                    piece_blocking, edge_blocking))
+            print(score[action])
         else:
             return 'pass'
         self.all_legal_actions.update(action)
         hand = _change_action_coding(action)
         self.count += 1
+        print(self.count, "hand\n")
         return hand
 
     def _initial(self, board):
