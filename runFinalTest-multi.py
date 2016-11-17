@@ -9,8 +9,13 @@ def game_thread( i, players, queue ):
     g = Game(players)
     while not g.isOver():
         g.step()
-
     score = g.calScores()
+
+    print(g, "\n")
+    print([player.__class__.__name__ for player in players])
+    print("score: {0}, winner: {1}".format(score, players[np.argmin(score)].__class__.__name__))
+    print("--------------------------------------------------")
+
     results = []
     for i in range(4):
         results.append( [ players[i].__class__.__name__, score[i] ] )
